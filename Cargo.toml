@@ -1,0 +1,25 @@
+[package]
+name = "kafka-dump"
+version = "0.1.0"
+authors = ["Martin Giachetti <martin.giachetti@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+config = "0.10"
+chrono = { version="0.4", features = ["std"] }
+failure = "0.1"
+flate2 = { version = "1.0", features = ["zlib"], default-features = false }
+flexi_logger = "0.15"
+log = "0.4"
+# rdkafka = { version = "0.24", features = ["cmake-build"] }
+rdkafka = "0.24.0"
+rusoto_core = "0.45.0"
+rusoto_s3 = "0.45.0"
+serde = { version = "1.0", features = ["derive"]}
+serde_json = "1.0"
+tar = "0.4"
+tokio = {version="0.2", features = ["full"]}
+
+

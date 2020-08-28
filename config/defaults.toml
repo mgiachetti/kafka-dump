@@ -1,0 +1,9 @@
+env = "development"             
+
+[kafka]
+brokers = "kafka:9092"
+group = "kafka-dump"
+topics = "indoor-topic"
+
+[s3]
+bucket_prefix = "kafka-topic-dump"
