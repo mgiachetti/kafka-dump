@@ -1,6 +1,6 @@
 use crate::kafka::consumer::{create_consumer, LoggingConsumer};
 use chrono::{DateTime, TimeZone, Utc};
-use log::{error, info};
+use log::{error, info, warn};
 use rdkafka::consumer::Consumer;
 use rdkafka::Message;
 use tokio::stream::StreamExt;
@@ -45,11 +45,19 @@ impl KafkaDumper {
     let mut current_slice = 0i64;
     let mut current_file: Option<GzEncoder<File>> = None;
     let mut current_msg: Option<rdkafka::message::BorrowedMessage> = None;
+    info!("Listenting to Topic {}", self.topic);
     while let Some(res) = stream.next().await {
       match res {
         Err(e) => error!("Kafka Error: {}", e),
         Ok(msg) => {
-          let msg_time = msg.timestamp().to_millis().expect("timestamp empty");
+          let msg_time = match msg.timestamp().to_millis() {
+            Some(time) => time,
+            None => {
+              warn!("Timestamp empty");
+              // skip msg?
+              continue;
+            }
+          };
           let slice = msg_time - (msg_time % time_slice);
 
           if current_slice < slice {
@@ -60,7 +68,7 @@ impl KafkaDumper {
                 .expect("Could not end file");
 
               let timestamp = from_millis(current_slice);
-              let key = format!("{}.gz", timestamp.format("%H:%M:%S"));
+              let key = format!("{}-{}.gz", timestamp.format("%H:%M:%S"), self.topic);
 
               let region = Region::UsEast1;
               let s3_client = S3Client::new(region);
@@ -86,6 +94,7 @@ impl KafkaDumper {
                 .put_object(put_request)
                 .await
                 .expect("Failed to put test object");
+              std::fs::remove_file(&key).unwrap_or(());
 
               info!("Pushed to AWS File {}", key);
 
@@ -94,9 +103,10 @@ impl KafkaDumper {
                 .store_offset(&current_msg.unwrap())
                 .expect("Error Storing offset");
             }
+
             current_slice = slice;
             let timestamp = from_millis(slice);
-            let key = format!("{}.gz", timestamp.format("%H:%M:%S"));
+            let key = format!("{}-{}.gz", timestamp.format("%H:%M:%S"), self.topic);
             let f = File::create(&key).expect("Cound not create file");
             current_file = Some(
               GzBuilder::new()

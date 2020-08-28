@@ -51,8 +51,11 @@ impl Settings {
       .get("env")
       .expect(r#"Cannot load config. "env" nor APP_ENV not present"#);
 
-    s.merge(File::with_name(&format!("config/{}", env)))?;
-    s.merge(Environment::with_prefix("app"))?;
+    let env_config: String = format!("config/{}", env);
+    if std::path::Path::new(&env_config).exists() {
+      s.merge(File::with_name(&env_config))?;
+    }
+    s.merge(Environment::with_prefix("app").separator("_"))?;
 
     return s.try_into();
   }

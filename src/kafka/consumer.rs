@@ -43,7 +43,5 @@ pub fn create_consumer(brokers: &str, group_id: &str, topics: &[&str]) -> Loggin
     .subscribe(topics)
     .expect("Can't subscribe to specified topic");
 
-  println!("subscribed");
-
   consumer
 }

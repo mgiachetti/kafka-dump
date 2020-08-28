@@ -16,6 +16,7 @@ async fn main() -> Result<(), Error> {
   let settings = settings::Settings::load()?;
   let topics: Vec<&str> = settings.kafka.topics.split(',').collect();
 
+  let mut handles = vec![];
   for topic in topics {
     let dumper = dumper::KafkaDumper::new(
       &settings.kafka.brokers,
@@ -23,9 +24,10 @@ async fn main() -> Result<(), Error> {
       topic,
       &settings.s3.bucket_prefix,
     );
-    tokio::spawn(async move {
+    handles.push(tokio::spawn(async move {
       dumper.start().await;
-    });
+    }));
   }
+  futures::future::join_all(handles).await;
   Ok(())
 }
