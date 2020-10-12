@@ -2,6 +2,8 @@ use failure::Error;
 use flexi_logger::opt_format;
 use tokio;
 
+#[macro_use]
+mod guard;
 mod dumper;
 mod kafka;
 mod settings;
@@ -23,11 +25,9 @@ async fn main() -> Result<(), Error> {
       &settings.kafka.group,
       topic,
       &settings.s3.bucket_prefix,
-    );
-    handles.push(tokio::spawn(async move {
-      dumper.start().await;
-    }));
+    )?;
+    handles.push(tokio::spawn(async move { dumper.start().await }));
   }
-  futures::future::join_all(handles).await;
+  futures::future::try_join_all(handles).await?;
   Ok(())
 }

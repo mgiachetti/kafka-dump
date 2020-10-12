@@ -1,3 +1,5 @@
+use crate::guard::Guard;
+use failure::Error;
 use log::{info, warn};
 use rdkafka::client::ClientContext;
 use rdkafka::config::{ClientConfig, RDKafkaLogLevel};
@@ -5,6 +7,8 @@ use rdkafka::consumer::stream_consumer::StreamConsumer;
 use rdkafka::consumer::{Consumer, ConsumerContext};
 use rdkafka::error::KafkaResult;
 use rdkafka::topic_partition_list::TopicPartitionList;
+
+use guard;
 
 pub struct LoggingConsumerContext;
 
@@ -22,10 +26,14 @@ impl ConsumerContext for LoggingConsumerContext {
 pub type LoggingConsumer = StreamConsumer<LoggingConsumerContext>;
 
 #[allow(dead_code)]
-pub fn create_consumer(brokers: &str, group_id: &str, topics: &[&str]) -> LoggingConsumer {
+pub fn create_consumer(
+  brokers: &str,
+  group_id: &str,
+  topics: &[&str],
+) -> Result<LoggingConsumer, Error> {
   let context = LoggingConsumerContext;
 
-  let consumer: LoggingConsumer = ClientConfig::new()
+  let result: KafkaResult<LoggingConsumer> = ClientConfig::new()
     .set("group.id", group_id)
     .set("bootstrap.servers", brokers)
     .set("enable.partition.eof", "false")
@@ -36,12 +44,13 @@ pub fn create_consumer(brokers: &str, group_id: &str, topics: &[&str]) -> Loggin
     // but only commit the offsets explicitly stored via `consumer.store_offset`.
     .set("enable.auto.offset.store", "false")
     .set_log_level(RDKafkaLogLevel::Debug)
-    .create_with_context(context)
-    .expect("Consumer creation failed");
+    .create_with_context(context);
+  let consumer = guard!(result, "Consumer creation failed");
 
-  consumer
-    .subscribe(topics)
-    .expect("Can't subscribe to specified topic");
+  guard!(
+    consumer.subscribe(topics),
+    "Can't subscribe to specified topic"
+  );
 
-  consumer
+  Ok(consumer)
 }
