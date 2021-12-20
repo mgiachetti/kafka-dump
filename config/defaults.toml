@@ -2,7 +2,7 @@ env = "development"
 
 [kafka]
 brokers = "kafka:9092"
-group = "kafka-dump"
+group_id = "kafka-dump"
 topics = "indoor-topic"
 
 [s3]
