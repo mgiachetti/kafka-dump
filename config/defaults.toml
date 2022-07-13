@@ -4,6 +4,9 @@ env = "development"
 brokers = "kafka:9092"
 group_id = "kafka-dump"
 topics = "indoor-topic"
+[kafka.auth]
+username = ""
+password = ""
 
 [s3]
 bucket_prefix = "kafka-topic-dump"

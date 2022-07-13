@@ -14,8 +14,8 @@ flate2 = { version = "1.0", features = ["zlib"], default-features = false }
 flexi_logger = "0.15"
 futures = "0.3.5"
 log = "0.4"
-# rdkafka = { version = "0.24", features = ["cmake-build"] }
-rdkafka = "0.24.0"
+rdkafka = { version = "0.24", features = ["ssl"] }
+# rdkafka = "0.24.0"
 rusoto_core =  { version="0.45.0", default_features=false, features=["rustls"] }
 rusoto_s3 =  { version="0.45.0", default_features=false, features=["rustls"] }
 serde = { version = "1.0", features = ["derive"]}

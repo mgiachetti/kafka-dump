@@ -25,6 +25,8 @@ async fn main() -> Result<(), Error> {
             &settings.kafka.group_id,
             topic,
             &settings.s3.bucket_prefix,
+            &settings.kafka.auth.username,
+            &settings.kafka.auth.password,
         )?;
         handles.push(tokio::spawn(async move { dumper.start().await }));
     }

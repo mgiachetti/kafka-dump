@@ -1,5 +1,5 @@
 # Build Stage
-FROM rust:1.45 AS builder
+FROM rust:1.55.0-buster AS builder
 WORKDIR /usr/src/
 
 RUN USER=root cargo new kafka-dump

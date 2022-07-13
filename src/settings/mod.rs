@@ -4,10 +4,17 @@ use std::env;
 use std::fmt::{self, Display};
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct KafkaAuthConfig {
+    pub username: String,
+    pub password: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct KafkaConfig {
     pub brokers: String,
     pub topics: String,
     pub group_id: String,
+    pub auth: KafkaAuthConfig,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]

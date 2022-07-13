@@ -24,13 +24,15 @@ impl KafkaDumper {
     group_id: &str,
     topic: &str,
     bucket_prefix: &str,
+    username: &str,
+    password: &str,
   ) -> Result<KafkaDumper, Error> {
     Ok(KafkaDumper {
       // brokers: brokers.into(),
       // group_id: group_id.into(),
       topic: topic.into(),
       bucket_prefix: bucket_prefix.into(),
-      consumer: create_consumer(brokers, group_id, &[topic])?,
+      consumer: create_consumer(brokers, group_id, &[topic], username, password)?,
     })
   }
 
