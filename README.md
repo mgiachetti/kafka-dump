@@ -11,3 +11,4 @@ splited by topic, date every 5 minutes
     APP_S3_BUCKET_PREFIX
     AWS_ACCESS_KEY_ID
     AWS_SECRET_ACCESS_KEY
+    AWS_DEFAULT_REGION

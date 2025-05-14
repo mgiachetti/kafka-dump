@@ -74,7 +74,7 @@ impl Slice {
     }
 
     async fn upload(&self, bucket: &str, key: &str, content: Vec<u8>) -> Result<(), Error> {
-        let region = Region::UsEast1;
+        let region = Region::default();
         let s3_client = S3Client::new(region);
         let put_request = PutObjectRequest {
             bucket: bucket.to_owned(),
