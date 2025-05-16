@@ -13,7 +13,7 @@ pub struct KafkaAuthConfig {
 pub struct KafkaConfig {
     pub brokers: String,
     pub topics: String,
-    pub group_id: String,
+    pub groupid: String,
     pub auth: KafkaAuthConfig,
 }
 
@@ -34,7 +34,7 @@ impl Display for AppEnv {
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct S3Config {
-    pub bucket_prefix: String,
+    pub bucketprefix: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

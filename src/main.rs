@@ -22,9 +22,9 @@ async fn main() -> Result<(), Error> {
     for topic in topics {
         let dumper = dumper::KafkaDumper::new(
             &settings.kafka.brokers,
-            &settings.kafka.group_id,
+            &settings.kafka.groupid,
             topic,
-            &settings.s3.bucket_prefix,
+            &settings.s3.bucketprefix,
             &settings.kafka.auth.username,
             &settings.kafka.auth.password,
         )?;

@@ -1,12 +1,12 @@
-env = "development"             
+env = "development"
 
 [kafka]
 brokers = "kafka:9092"
-group_id = "kafka-dump"
+groupid = "kafka-dump"
 topics = "indoor-topic"
 [kafka.auth]
 username = ""
 password = ""
 
 [s3]
-bucket_prefix = "kafka-topic-dump"
+bucketprefix = "kafka-topic-dump"
