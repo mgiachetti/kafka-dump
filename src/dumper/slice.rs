@@ -118,8 +118,8 @@ impl Slice {
                     Ok(_) => {
                         break;
                     }
-                    Err(_) => {
-                        warn!("Failed to push AWS File {} on attempt {}", key, attempts);
+                    Err(e) => {
+                        warn!("Failed to push AWS File {} on attempt {} with error: {}", key, attempts, e);
                         attempts += 1;
                         if attempts > 10 {
                             failure::bail!("Failed to PUSH to AWS");
